@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.1//EN"
+	"http://struts.apache.org/dtds/struts-2.1.dtd">
+
+<struts>
+	<!-- 当struts.xml配置文件发生修改，会立刻加载，在生产环境下最好不要配置 -->
+    <constant name="struts.configuration.xml.reload" value="true"/>
+    <!-- 会提供更加友好的提示信息 -->
+    <constant name="struts.devMode" value="true"/>
+    <!-- 需要继承struts-default包，这样就拥有的最基本的功能 -->
+    <package name="struts2" extends="struts-default">
+	</package>
+	<package name="user" extends="struts-default">
+		<action name="login" class="bbs.action.LoginAction">
+			<result name="success">/center.jsp</result>
+			<result name="error">/login.jsp</result>
+			<result name="input">/login.jsp</result>
+		</action>
+		<action name="regist" class="bbs.action.RegistAction">
+			<result name="success">/center.jsp</result>
+			<result name="error">/regist.jsp</result>
+			<result name="input">/regist.jsp</result>
+		</action>
+		<action name="quit" class="bbs.action.QuitAction">
+			<result name="success" type="chain">index</result>
+		</action>
+	</package>
+	<package name="message" extends="struts-default">
+		<interceptors>
+			<!-- 声明拦截器 -->
+			<interceptor name="checkPrivilege"
+				class="bbs.interceptor.CheckUserInterceptor"></interceptor>
+			<!-- 定义自己的拦截器栈 -->
+			<interceptor-stack name="myInterceptorStack">
+				<interceptor-ref name="checkPrivilege"></interceptor-ref>
+				<!-- defaultStack：Struts2的默认拦截器栈 -->
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<!-- 定义为缺省拦截器，所有的Action都会得到使用 -->
+		<default-interceptor-ref name="myInterceptorStack" />
+		<!-- 全局的Result配置 -->
+		<global-results>
+			<result name="login">/login.jsp</result>
+		</global-results>
+		<action name="index" class="bbs.action.IndexAction">
+			<result name="success">/index.jsp</result>
+		</action>
+		<action name="publish" class="bbs.action.PublishAction">
+			<result name="success" type="chain">operate</result>
+		</action>
+		<action name="operate" class="bbs.action.OperateAction">
+			<result name="success">/operate.jsp</result>
+		</action>
+		<action name="edit" class="bbs.action.EditAction">
+			<result name="success" type="chain">operate</result>
+		</action>
+		<action name="delete" class="bbs.action.DeleteAction">
+			<result name="success" type="chain">operate</result>
+		</action>
+		<action name="show" class="bbs.action.ShowAction">
+			<result name="success">/show.jsp</result>
+		</action>
+		<action name="showEdit" class="bbs.action.ShowEditAction">
+			<result name="success">/edit.jsp</result>
+		</action>
+	</package>
+</struts>
+	
